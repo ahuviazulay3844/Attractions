@@ -1034,9 +1034,27 @@ button {
 
 .comment-top {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 10px;
   margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.comment-top-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.comment-card-stars {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  color: var(--text-soft);
 }
 
 .comment-date {

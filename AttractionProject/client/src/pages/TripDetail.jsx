@@ -6,7 +6,7 @@ import { travelersApi } from '../api/travelers'
 import { getTripMeta } from '../constants/tripImages'
 import { DIFFICULTY_BADGE } from '../constants/enums'
 import { getAccessibility, formatDuration } from '../utils/tripUtils'
-import { getTripRatingStats, addTripRating } from '../utils/ratings'
+import { getTripRatingStats } from '../utils/ratings'
 import { Loading, ErrorState } from '../components/States'
 import { Input } from '../components/Field'
 import { StarDisplay, StarInput } from '../components/StarRating'
@@ -18,7 +18,6 @@ export default function TripDetail() {
   const toast = useToast()
   const [trip, setTrip] = useState(null)
   const [comments, setComments] = useState([])
-  const [ratingStats, setRatingStats] = useState({ average: 0, count: 0 })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [name, setName] = useState('')
@@ -26,23 +25,21 @@ export default function TripDetail() {
   const [stars, setStars] = useState(5)
   const [saving, setSaving] = useState(false)
 
-  const refreshRating = (t) => setRatingStats(getTripRatingStats(id, t))
-
   const load = () => {
     setLoading(true)
     setError(null)
-    Promise.all([attractionsApi.getById(id), commentsApi.getAll()])
-      .then(([t, allComments]) => {
+    Promise.all([attractionsApi.getById(id), commentsApi.getByAttraction(id)])
+      .then(([t, tripComments]) => {
         setTrip(t)
-        const filtered = (allComments || []).filter((c) => c.idAttraction?.id === Number(id))
-        setComments(filtered)
-        refreshRating(t)
+        setComments(tripComments || [])
       })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false))
   }
 
   useEffect(load, [id])
+
+  const ratingStats = trip ? getTripRatingStats(id, trip, comments) : { average: 0, count: 0 }
 
   const submitComment = async (e) => {
     e.preventDefault()
@@ -58,10 +55,9 @@ export default function TripDetail() {
         idAttraction: { id: Number(id) },
         traveler: { idTraveler: traveler.idTraveler },
         content: content.trim(),
+        rating: stars,
       })
-      addTripRating(id, stars)
-      setComments((prev) => [...prev, newComment])
-      refreshRating(trip)
+      setComments((prev) => [newComment, ...prev])
       setContent('')
       toast('התגובה והדירוג נוספו בהצלחה!')
     } catch (err) {
@@ -147,7 +143,7 @@ export default function TripDetail() {
               onChange={(e) => setName(e.target.value)}
               required
             />
-            <StarInput value={stars} onChange={setStars} label="הדירוג שלך" />
+            <StarInput value={stars} onChange={setStars} label="הדירוג שלך (כוכבים)" />
             <div className="field">
               <label>התגובה שלך</label>
               <textarea
@@ -175,7 +171,12 @@ export default function TripDetail() {
                   </div>
                   <div className="comment-body">
                     <div className="comment-top">
-                      <strong>{c.traveler?.nameOfTraveler || 'מטייל/ת'}</strong>
+                      <div className="comment-top-main">
+                        <strong>{c.traveler?.nameOfTraveler || 'מטייל/ת'}</strong>
+                        {c.rating >= 1 && (
+                          <StarDisplay value={c.rating} size="sm" />
+                        )}
+                      </div>
                       {c.localDate && <span className="comment-date">{c.localDate}</span>}
                     </div>
                     <p>{c.content}</p>

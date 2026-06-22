@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 export default function Favorites() {
   const [trips, setTrips] = useState([])
   const [commentCounts, setCommentCounts] = useState({})
+  const [allComments, setAllComments] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [savedIds, setSavedIds] = useState(() => getSavedTripIds())
@@ -22,6 +23,7 @@ export default function Favorites() {
       .then(([allTrips, comments]) => {
         const saved = (allTrips || []).filter((t) => ids.includes(t.id))
         setTrips(saved)
+        setAllComments(comments || [])
         const counts = {}
         ;(comments || []).forEach((c) => {
           const aid = c.idAttraction?.id
@@ -65,7 +67,7 @@ export default function Favorites() {
       ) : (
         <div className="grid-trips">
           {trips.map((t) => (
-            <TripCard key={t.id} trip={t} commentCount={commentCounts[t.id] || 0} />
+            <TripCard key={t.id} trip={t} commentCount={commentCounts[t.id] || 0} allComments={allComments} />
           ))}
         </div>
       )}

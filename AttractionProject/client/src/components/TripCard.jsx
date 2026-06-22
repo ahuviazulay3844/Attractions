@@ -6,11 +6,11 @@ import { getTripRatingStats } from '../utils/ratings'
 import { StarDisplay } from './StarRating'
 import SaveTripButton from './SaveTripButton'
 
-export default function TripCard({ trip, commentCount = 0 }) {
+export default function TripCard({ trip, commentCount = 0, allComments = [] }) {
   const meta = getTripMeta(trip)
   const price = trip.priceOfAttraction > 0 ? `₪${trip.priceOfAttraction}` : 'חינם'
   const acc = getAccessibility(trip, meta)
-  const rating = getTripRatingStats(trip.id, trip)
+  const rating = getTripRatingStats(trip.id, trip, allComments)
 
   return (
     <article className="trip-card-wrap">

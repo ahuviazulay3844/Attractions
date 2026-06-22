@@ -1,53 +1,26 @@
 import { getTripMeta } from '../constants/tripImages'
 
-const KEY = 'trip-ratings'
+export function getRatedComments(comments = []) {
+  return comments.filter((c) => c.rating >= 1 && c.rating <= 5)
+}
 
-function loadAll() {
-  try {
-    const raw = localStorage.getItem(KEY)
-    return raw ? JSON.parse(raw) : {}
-  } catch {
-    return {}
+export function getTripRatingStats(tripId, trip, allComments = []) {
+  const tripComments = allComments.filter((c) => c.idAttraction?.id === Number(tripId))
+  const rated = getRatedComments(tripComments)
+
+  if (rated.length > 0) {
+    const sum = rated.reduce((s, c) => s + c.rating, 0)
+    return {
+      average: Math.round((sum / rated.length) * 10) / 10,
+      count: rated.length,
+      fromComments: true,
+    }
   }
-}
 
-function saveAll(data) {
-  localStorage.setItem(KEY, JSON.stringify(data))
-}
-
-export function addTripRating(tripId, rating) {
-  const id = String(tripId)
-  const all = loadAll()
-  const list = all[id] || []
-  list.push({ rating: Number(rating), at: Date.now() })
-  all[id] = list
-  saveAll(all)
-}
-
-export function getTripRatingStats(tripId, trip) {
   const meta = getTripMeta(trip)
-  const userRatings = loadAll()[String(tripId)] || []
-  const userSum = userRatings.reduce((s, r) => s + r.rating, 0)
-  const userCount = userRatings.length
-
-  const baseRating = meta.baseRating ?? 4.2
-  const baseCount = meta.baseReviews ?? 8
-
-  const totalCount = baseCount + userCount
-  const average =
-    totalCount === 0
-      ? 0
-      : (baseRating * baseCount + userSum) / totalCount
-
   return {
-    average: Math.round(average * 10) / 10,
-    count: totalCount,
-    userCount,
+    average: meta.baseRating ?? 4.2,
+    count: meta.baseReviews ?? 8,
+    fromComments: false,
   }
-}
-
-export function formatStars(average) {
-  const full = Math.floor(average)
-  const half = average - full >= 0.5
-  return { full, half, empty: 5 - full - (half ? 1 : 0) }
 }

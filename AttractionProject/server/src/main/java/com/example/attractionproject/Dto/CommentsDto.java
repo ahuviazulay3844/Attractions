@@ -16,6 +16,7 @@ public class CommentsDto {
     @JoinColumn(name="id_traveler")
     private Traveler traveler;//traveler
     private  String content;//traveler comment
+    private Integer rating;//star rating 1-5
     private LocalDate localDate;//comment date
 
 }

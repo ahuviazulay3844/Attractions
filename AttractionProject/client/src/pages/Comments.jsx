@@ -6,9 +6,10 @@ import { travelersApi } from '../api/travelers'
 import { Loading, ErrorState, EmptyState } from '../components/States'
 import Modal from '../components/Modal'
 import { Input, Select } from '../components/Field'
+import { StarDisplay, StarInput } from '../components/StarRating'
 import { useToast } from '../components/Toast'
 
-const emptyForm = { attractionId: '', travelerId: '', content: '' }
+const emptyForm = { attractionId: '', travelerId: '', content: '', rating: 5 }
 
 export default function Comments() {
   const [items, setItems] = useState([])
@@ -44,6 +45,7 @@ export default function Comments() {
     try {
       const payload = {
         content: form.content,
+        rating: Number(form.rating) || 5,
         idAttraction: form.attractionId ? { id: Number(form.attractionId) } : null,
         traveler: form.travelerId ? { idTraveler: Number(form.travelerId) } : null,
       }
@@ -102,12 +104,18 @@ export default function Comments() {
         />
       ) : (
         <div className="grid">
-          {items.map((c) => (
+          {[...items].sort((a, b) => b.idComments - a.idComments).map((c) => (
             <div className="card" key={c.idComments}>
               <div className="card-head">
                 <span className="card-title">💬 {travelerName(c)}</span>
                 <span className="card-id">#{c.idComments}</span>
               </div>
+              {c.rating >= 1 && (
+                <div className="comment-card-stars">
+                  <StarDisplay value={c.rating} size="sm" />
+                  <span>{c.rating}/5</span>
+                </div>
+              )}
               <p style={{ color: 'var(--text)', fontSize: '0.98rem' }}>{c.content || '—'}</p>
               <div className="card-rows">
                 <div className="card-row">
@@ -166,6 +174,11 @@ export default function Comments() {
               options={travelers.map((t) => ({ value: t.idTraveler, label: t.nameOfTraveler || `#${t.idTraveler}` }))}
               value={form.travelerId}
               onChange={change('travelerId')}
+            />
+            <StarInput
+              value={form.rating}
+              onChange={(n) => setForm((f) => ({ ...f, rating: n }))}
+              label="דירוג (כוכבים)"
             />
             <Input label="תוכן התגובה" value={form.content} onChange={change('content')} required />
           </form>

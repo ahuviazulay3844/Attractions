@@ -23,6 +23,7 @@ export default function Attractions() {
   const { filters, setFilter, clearAll, activeCount } = useTripFilters()
   const [items, setItems] = useState([])
   const [commentCounts, setCommentCounts] = useState({})
+  const [allComments, setAllComments] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [open, setOpen] = useState(false)
@@ -36,6 +37,7 @@ export default function Attractions() {
     Promise.all([attractionsApi.getAll(), commentsApi.getAll()])
       .then(([data, comments]) => {
         setItems(data || [])
+        setAllComments(comments || [])
         const counts = {}
         ;(comments || []).forEach((c) => {
           const aid = c.idAttraction?.id
@@ -115,7 +117,7 @@ export default function Attractions() {
       ) : (
         <div className="grid-trips">
           {filtered.map((t) => (
-            <TripCard key={t.id} trip={t} commentCount={commentCounts[t.id] || 0} />
+            <TripCard key={t.id} trip={t} commentCount={commentCounts[t.id] || 0} allComments={allComments} />
           ))}
         </div>
       )}

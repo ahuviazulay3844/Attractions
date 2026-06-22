@@ -10,6 +10,7 @@ const HERO_IMG = 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w
 export default function Home() {
   const [trips, setTrips] = useState([])
   const [commentCounts, setCommentCounts] = useState({})
+  const [allComments, setAllComments] = useState([])
   const [totalComments, setTotalComments] = useState(0)
   const [loading, setLoading] = useState(true)
 
@@ -17,6 +18,7 @@ export default function Home() {
     Promise.all([attractionsApi.getAll(), commentsApi.getAll()])
       .then(([t, comments]) => {
         setTrips(t || [])
+        setAllComments(comments || [])
         const counts = {}
         ;(comments || []).forEach((c) => {
           const aid = c.idAttraction?.id
@@ -66,7 +68,7 @@ export default function Home() {
         ) : (
           <div className="grid-trips">
             {featured.map((t) => (
-              <TripCard key={t.id} trip={t} commentCount={commentCounts[t.id] || 0} />
+              <TripCard key={t.id} trip={t} commentCount={commentCounts[t.id] || 0} allComments={allComments} />
             ))}
           </div>
         )}

@@ -20,6 +20,7 @@ public class Comments {
 
     private  Traveler traveler;//traveler
     private  String content;//traveler comment
+    private Integer rating;//star rating 1-5, null = no rating
     private LocalDate localDate;//comment date
     public void setIdComments(int idComments) {
         this.idComments = idComments;
@@ -44,6 +45,14 @@ public class Comments {
     }
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 
     public LocalDate getLocalDate() {

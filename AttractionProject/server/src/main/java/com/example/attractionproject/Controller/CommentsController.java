@@ -32,6 +32,12 @@ public class CommentsController {
     {
         return mapStructImp.toListCommentsDto(commentsRepository.findAll());
     }
+    //returns comments for one attraction
+    @GetMapping("/byAttraction/{id}")
+    public List<Comments> GetByAttraction(@PathVariable int id)
+    {
+        return commentsRepository.findByIdAttraction_IdOrderByIdCommentsDesc(id);
+    }
         //add comment
         @PostMapping("/add")
     public Comments Addcomments(@RequestBody Comments comments)
@@ -39,6 +45,10 @@ public class CommentsController {
         if(comments.getLocalDate()==null)
         {
             comments.setLocalDate(LocalDate.now());//comment date
+        }
+        if(comments.getRating() == null || comments.getRating() < 1 || comments.getRating() > 5)
+        {
+            comments.setRating(5);//default star rating
         }
         Comments newComments=commentsRepository.save(comments);
         return newComments;
@@ -50,6 +60,10 @@ public class CommentsController {
         if(comments.getLocalDate()==null)
         {
             comments.setLocalDate(LocalDate.now());//comment date
+        }
+        if(comments.getRating() == null || comments.getRating() < 1 || comments.getRating() > 5)
+        {
+            comments.setRating(5);//default star rating
         }
         CommentsDto newComments=(mapStructImp.toCommentsDto(commentsRepository.save(comments)));
         return newComments;
