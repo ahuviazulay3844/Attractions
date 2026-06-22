@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import { attractionsApi } from '../api/attractions'
 import { commentsApi } from '../api/comments'
-import { AREAS } from '../constants/enums'
 import TripCard from '../components/TripCard'
+import TripFilters, { useTripFilters } from '../components/TripFilters'
 import { Loading, ErrorState, EmptyState } from '../components/States'
 import Modal from '../components/Modal'
 import { Input, Select } from '../components/Field'
 import { useToast } from '../components/Toast'
-import { DIFFICULTY_LEVELS, AGES } from '../constants/enums'
+import { DIFFICULTY_LEVELS, AGES, AREAS } from '../constants/enums'
+import { filterTrips } from '../utils/tripUtils'
 
 const emptyForm = {
   nameTraveler: '',
@@ -20,8 +20,7 @@ const emptyForm = {
 }
 
 export default function Attractions() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const areaFilter = searchParams.get('area') || ''
+  const { filters, setFilter, clearAll, activeCount } = useTripFilters()
   const [items, setItems] = useState([])
   const [commentCounts, setCommentCounts] = useState({})
   const [loading, setLoading] = useState(true)
@@ -50,7 +49,7 @@ export default function Attractions() {
 
   useEffect(load, [])
 
-  const filtered = areaFilter ? items.filter((t) => t.area === areaFilter) : items
+  const filtered = filterTrips(items, filters)
 
   const change = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
@@ -83,37 +82,36 @@ export default function Attractions() {
       <div className="page-header">
         <div className="page-title">
           <h2>🗺️ כל המסלולים</h2>
-          <p>{filtered.length} מסלולים{areaFilter ? ` · ${areaFilter}` : ''}</p>
+          <p>סנן/י לפי אזור, גיל, קושי, זמן, נגישות — או חפש/י מילת מפתח</p>
         </div>
         <button className="btn btn-primary" onClick={() => setOpen(true)}>
           + מסלול חדש
         </button>
       </div>
 
-      <div className="filters-bar">
-        <button
-          className={`filter-pill${!areaFilter ? ' active' : ''}`}
-          onClick={() => setSearchParams({})}
-        >
-          הכל
-        </button>
-        {AREAS.map((a) => (
-          <button
-            key={a}
-            className={`filter-pill${areaFilter === a ? ' active' : ''}`}
-            onClick={() => setSearchParams({ area: a })}
-          >
-            {a}
-          </button>
-        ))}
-      </div>
+      <TripFilters
+        filters={filters}
+        setFilter={setFilter}
+        clearAll={clearAll}
+        activeCount={activeCount}
+        resultCount={filtered.length}
+      />
 
       {loading ? (
         <Loading />
       ) : error ? (
         <ErrorState message={error} onRetry={load} />
       ) : filtered.length === 0 ? (
-        <EmptyState icon="🗺️" title="אין מסלולים באזור זה" />
+        <EmptyState
+          icon="🔍"
+          title="לא נמצאו מסלולים"
+          text="נסה/י לשנות את הפילטרים או את החיפוש"
+          action={
+            activeCount > 0 ? (
+              <button className="btn btn-primary" onClick={clearAll}>נקה פילטרים</button>
+            ) : null
+          }
+        />
       ) : (
         <div className="grid-trips">
           {filtered.map((t) => (

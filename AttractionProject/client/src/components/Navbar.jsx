@@ -3,8 +3,8 @@ import { NavLink } from 'react-router-dom'
 const links = [
   { to: '/', label: 'בית', end: true },
   { to: '/attractions', label: 'מסלולים' },
+  { to: '/favorites', label: 'מועדפים' },
   { to: '/images', label: 'גלריה' },
-  { to: '/comments', label: 'תגובות' },
 ]
 
 export default function Navbar() {

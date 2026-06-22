@@ -7,6 +7,7 @@ import TripDetail from './pages/TripDetail'
 import Travelers from './pages/Travelers'
 import Comments from './pages/Comments'
 import Images from './pages/Images'
+import Favorites from './pages/Favorites'
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/attractions" element={<Attractions />} />
             <Route path="/attractions/:id" element={<TripDetail />} />
+            <Route path="/favorites" element={<Favorites />} />
             <Route path="/travelers" element={<Travelers />} />
             <Route path="/comments" element={<Comments />} />
             <Route path="/images" element={<Images />} />

@@ -43,6 +43,9 @@ export default function Home() {
             <Link to="/attractions" className="btn btn-primary btn-lg">
               גלה מסלולים ←
             </Link>
+            <Link to="/attractions?q=מפל" className="btn btn-ghost btn-lg hero-btn-light">
+              🔍 חיפוש מפלים
+            </Link>
           </div>
           <div className="hero-stats">
             <div><strong>{trips.length}</strong><span>מסלולים</span></div>

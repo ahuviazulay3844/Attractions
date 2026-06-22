@@ -5,8 +5,12 @@ import { commentsApi } from '../api/comments'
 import { travelersApi } from '../api/travelers'
 import { getTripMeta } from '../constants/tripImages'
 import { DIFFICULTY_BADGE } from '../constants/enums'
+import { getAccessibility, formatDuration } from '../utils/tripUtils'
+import { getTripRatingStats, addTripRating } from '../utils/ratings'
 import { Loading, ErrorState } from '../components/States'
 import { Input } from '../components/Field'
+import { StarDisplay, StarInput } from '../components/StarRating'
+import SaveTripButton from '../components/SaveTripButton'
 import { useToast } from '../components/Toast'
 
 export default function TripDetail() {
@@ -14,11 +18,15 @@ export default function TripDetail() {
   const toast = useToast()
   const [trip, setTrip] = useState(null)
   const [comments, setComments] = useState([])
+  const [ratingStats, setRatingStats] = useState({ average: 0, count: 0 })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [name, setName] = useState('')
   const [content, setContent] = useState('')
+  const [stars, setStars] = useState(5)
   const [saving, setSaving] = useState(false)
+
+  const refreshRating = (t) => setRatingStats(getTripRatingStats(id, t))
 
   const load = () => {
     setLoading(true)
@@ -28,6 +36,7 @@ export default function TripDetail() {
         setTrip(t)
         const filtered = (allComments || []).filter((c) => c.idAttraction?.id === Number(id))
         setComments(filtered)
+        refreshRating(t)
       })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false))
@@ -37,7 +46,7 @@ export default function TripDetail() {
 
   const submitComment = async (e) => {
     e.preventDefault()
-    if (!name.trim() || !content.trim()) return
+    if (!name.trim() || !content.trim() || !stars) return
     setSaving(true)
     try {
       const traveler = await travelersApi.add({
@@ -50,9 +59,11 @@ export default function TripDetail() {
         traveler: { idTraveler: traveler.idTraveler },
         content: content.trim(),
       })
+      addTripRating(id, stars)
       setComments((prev) => [...prev, newComment])
+      refreshRating(trip)
       setContent('')
-      toast('התגובה נוספה בהצלחה!')
+      toast('התגובה והדירוג נוספו בהצלחה!')
     } catch (err) {
       toast(err.message, 'error')
     } finally {
@@ -66,36 +77,59 @@ export default function TripDetail() {
 
   const meta = getTripMeta(trip)
   const price = trip.priceOfAttraction > 0 ? `₪${trip.priceOfAttraction}` : 'חינם'
+  const acc = getAccessibility(trip, meta)
 
   return (
     <div className="trip-detail">
       <div className="trip-detail-hero" style={{ backgroundImage: `url(${meta.image})` }}>
         <div className="trip-detail-hero-inner container">
           <Link to="/attractions" className="back-link">← חזרה למסלולים</Link>
+          <div className="trip-hero-actions">
+            <SaveTripButton tripId={trip.id} />
+          </div>
           <h1>{trip.nameTraveler}</h1>
           <p>{meta.tagline}</p>
+          <div className="trip-rating-block">
+            <StarDisplay value={ratingStats.average} size="lg" />
+            <span className="trip-rating-text">
+              {ratingStats.average} · {ratingStats.count} דירוגים · {comments.length} תגובות
+            </span>
+          </div>
           <div className="trip-detail-chips">
             <span className={`badge ${DIFFICULTY_BADGE[trip.difficultyLevel] || 'badge-blue'}`}>
               {trip.difficultyLevel}
             </span>
             <span className="badge badge-sand">{trip.area}</span>
             <span className="badge badge-blue">👤 {trip.age}</span>
-            <span className="badge badge-blue">⏱ {trip.timeAttraction?.slice(0, 5)}</span>
+            <span className="badge badge-blue">⏱ {formatDuration(trip.timeAttraction)}</span>
             <span className="badge badge-green">{price}</span>
+            {acc.strollerFriendly && <span className="badge badge-green">🍼 מתאים לעגלות</span>}
+            {acc.kidFriendly && <span className="badge badge-blue">👶 מתאים לילדים</span>}
+            {acc.familyFriendly && <span className="badge badge-sand">👨‍👩‍👧 מתאים למשפחות</span>}
           </div>
         </div>
       </div>
 
       <div className="container trip-detail-content">
         <section className="trip-about">
-          <h2>על המסלול</h2>
+          <h2>📋 מידע על המסלול</h2>
           <p>{meta.tagline}</p>
+          {meta.keywords?.length > 0 && (
+            <div className="keyword-tags">
+              {meta.keywords.map((k) => (
+                <Link key={k} to={`/attractions?q=${encodeURIComponent(k)}`} className="keyword-tag">
+                  #{k}
+                </Link>
+              ))}
+            </div>
+          )}
           <div className="trip-about-grid">
             <div><span>אזור</span><strong>{trip.area}</strong></div>
             <div><span>רמת קושי</span><strong>{trip.difficultyLevel}</strong></div>
             <div><span>גיל מתאים</span><strong>{trip.age}</strong></div>
-            <div><span>משך משוער</span><strong>{trip.timeAttraction?.slice(0, 5)}</strong></div>
+            <div><span>משך משוער</span><strong>{formatDuration(trip.timeAttraction)}</strong></div>
             <div><span>מחיר</span><strong>{price}</strong></div>
+            <div><span>דירוג קהילה</span><strong>{ratingStats.average} / 5</strong></div>
           </div>
         </section>
 
@@ -113,6 +147,7 @@ export default function TripDetail() {
               onChange={(e) => setName(e.target.value)}
               required
             />
+            <StarInput value={stars} onChange={setStars} label="הדירוג שלך" />
             <div className="field">
               <label>התגובה שלך</label>
               <textarea
@@ -125,7 +160,7 @@ export default function TripDetail() {
               />
             </div>
             <button type="submit" className="btn btn-primary" disabled={saving}>
-              {saving ? 'שולח...' : 'פרסם תגובה'}
+              {saving ? 'שולח...' : 'פרסם תגובה ודירוג'}
             </button>
           </form>
 
