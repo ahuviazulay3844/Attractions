@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Input } from '../components/Field'
+import { Input, PasswordInput } from '../components/Field'
 import { useToast } from '../components/Toast'
 import { Icon } from '../components/Icons'
 
@@ -43,7 +43,7 @@ export default function Register() {
         <form className="auth-form" onSubmit={submit}>
           <Input label="שם מלא" value={name} onChange={(e) => setName(e.target.value)} required />
           <Input label="אימייל" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <Input label="סיסמה" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <PasswordInput label="סיסמה" value={password} onChange={(e) => setPassword(e.target.value)} required />
           <button type="submit" className="btn btn-primary btn-block" disabled={saving}>
             {saving ? 'נרשם...' : 'הרשמה'}
           </button>

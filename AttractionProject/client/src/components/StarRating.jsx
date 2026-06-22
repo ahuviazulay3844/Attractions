@@ -1,16 +1,18 @@
 export function StarDisplay({ value = 0, size = 'md' }) {
-  const avg = Number(value) || 0
-  const stars = []
-  for (let i = 1; i <= 5; i++) {
-    if (avg >= i) stars.push('full')
-    else if (avg >= i - 0.5) stars.push('half')
-    else stars.push('empty')
-  }
+  const avg = Math.max(0, Math.min(5, Number(value) || 0))
+
   return (
     <span className={`star-display star-${size}`} aria-label={`דירוג ${avg} מתוך 5`}>
-      {stars.map((type, i) => (
-        <span key={i} className={`star star-${type}`}>★</span>
-      ))}
+      {[1, 2, 3, 4, 5].map((i) => {
+        let type = 'empty'
+        if (avg >= i) type = 'full'
+        else if (avg >= i - 0.5) type = 'half'
+        return (
+          <span key={i} className={`star star-${type}`} aria-hidden="true">
+            ★
+          </span>
+        )
+      })}
     </span>
   )
 }
@@ -31,6 +33,7 @@ export function StarInput({ value, onChange, label = 'דירוג' }) {
             ★
           </button>
         ))}
+        <span className="star-input-value">{value}/5</span>
       </div>
     </div>
   )

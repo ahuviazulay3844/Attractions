@@ -86,6 +86,19 @@ export function Icon({ name, size = 18, className = '' }) {
           <path d="M21 12a8 8 0 0 1-8 8H7l-4 3V12a8 8 0 0 1 16 0z" />
         </svg>
       )
+    case 'eye':
+      return (
+        <svg {...props}>
+          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+      )
+    case 'eye-off':
+      return (
+        <svg {...props}>
+          <path d="M3 3l18 18M10.5 10.7A3 3 0 0 0 13.3 13.5M6.2 6.2C4.2 7.6 2.7 9.7 2 12c0 0 3.5 7 10 7 1.8 0 3.4-.5 4.8-1.3M9.9 5.1A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a17.5 17.5 0 0 1-4.1 5.2" />
+        </svg>
+      )
     default:
       return null
   }
