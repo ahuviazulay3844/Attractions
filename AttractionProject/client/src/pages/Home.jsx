@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { attractionsApi } from '../api/attractions'
 import { commentsApi } from '../api/comments'
 import TripCard from '../components/TripCard'
 import { Loading } from '../components/States'
+import { HERO_SLIDES } from '../constants/tripImages'
+import { getTripRatingStats } from '../utils/ratings'
 
-const HERO_IMG = 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&q=80&auto=format&fit=crop'
+const HERO_INTERVAL_MS = 5000
 
 export default function Home() {
   const [trips, setTrips] = useState([])
@@ -13,6 +15,7 @@ export default function Home() {
   const [allComments, setAllComments] = useState([])
   const [totalComments, setTotalComments] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [heroIndex, setHeroIndex] = useState(0)
 
   useEffect(() => {
     Promise.all([attractionsApi.getAll(), commentsApi.getAll()])
@@ -30,11 +33,40 @@ export default function Home() {
       .finally(() => setLoading(false))
   }, [])
 
-  const featured = trips.slice(0, 3)
+  useEffect(() => {
+    if (HERO_SLIDES.length <= 1) return undefined
+    const timer = setInterval(() => {
+      setHeroIndex((i) => (i + 1) % HERO_SLIDES.length)
+    }, HERO_INTERVAL_MS)
+    return () => clearInterval(timer)
+  }, [])
+
+  const featured = useMemo(() => {
+    return [...trips]
+      .map((trip) => ({
+        trip,
+        stats: getTripRatingStats(trip.id, trip, allComments),
+      }))
+      .sort((a, b) => {
+        if (b.stats.average !== a.stats.average) return b.stats.average - a.stats.average
+        return b.stats.count - a.stats.count
+      })
+      .slice(0, 3)
+      .map(({ trip }) => trip)
+  }, [trips, allComments])
 
   return (
     <>
-      <section className="hero-full" style={{ backgroundImage: `url(${HERO_IMG})` }}>
+      <section className="hero-full">
+        <div className="hero-full-slides" aria-hidden="true">
+          {HERO_SLIDES.map((src, i) => (
+            <div
+              key={src}
+              className={`hero-full-slide${i === heroIndex ? ' active' : ''}`}
+              style={{ backgroundImage: `url(${src})` }}
+            />
+          ))}
+        </div>
         <div className="hero-full-inner container">
           <span className="hero-eyebrow">🌿 גלו את ישראל</span>
           <h1>מסלולי טיול, אטרקציות וחוויות בטבע</h1>

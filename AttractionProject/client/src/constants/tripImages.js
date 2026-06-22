@@ -1,9 +1,14 @@
-const UNSPLASH = (id) => `https://images.unsplash.com/photo-${id}?w=900&q=80&auto=format&fit=crop`
+const tripImages = import.meta.glob('../assets/trips/*.jpg', {
+  eager: true,
+  import: 'default',
+})
 
-// matching image + metadata per trip name (client-side only, no server change)
+const LOCAL = (file) => tripImages[`../assets/trips/${file}.jpg`]
+
+// Real landscape photos bundled via Vite (see scripts/download-trip-images.mjs)
 export const TRIP_META = {
   'הבנייאס': {
-    image: UNSPLASH('1433086966358-54859d0ed716'),
+    image: LOCAL('banias'),
     tagline: 'מפלים, נחלים ויער ירוק בגליל העליון',
     keywords: ['מפל', 'מים', 'נחל', 'גליל', 'צפון', 'טבע'],
     strollerFriendly: true,
@@ -13,7 +18,7 @@ export const TRIP_META = {
     baseReviews: 24,
   },
   'נחל דוד - עין גדי': {
-    image: UNSPLASH('1501785888041-af3ef285b470'),
+    image: LOCAL('ein-gedi'),
     tagline: 'מעיינות מדבריים ונוף מרהיב על ים המלח',
     keywords: ['מעיין', 'מדבר', 'ים המלח', 'נחל', 'תצפית', 'דרום'],
     strollerFriendly: false,
@@ -23,7 +28,7 @@ export const TRIP_META = {
     baseReviews: 31,
   },
   'מכתש רמון': {
-    image: UNSPLASH('1432405972618-c60b0225b8f9'),
+    image: LOCAL('ramon'),
     tagline: 'מכתש ענקי, שקיעות ושמי כוכבים',
     keywords: ['מכתש', 'נגב', 'שקיעה', 'כוכבים', 'תצפית', 'מדבר'],
     strollerFriendly: false,
@@ -33,7 +38,7 @@ export const TRIP_META = {
     baseReviews: 19,
   },
   'מצדה - שביל הנחש': {
-    image: UNSPLASH('1452421822248-d4c2b47f0c81'),
+    image: LOCAL('masada'),
     tagline: 'עלייה תלולה לתצפית היסטורית מרהיבה',
     keywords: ['מצדה', 'היסטוריה', 'תצפית', 'שביל', 'דרום', 'זריחה'],
     strollerFriendly: false,
@@ -43,7 +48,7 @@ export const TRIP_META = {
     baseReviews: 22,
   },
   'הר מירון': {
-    image: UNSPLASH('1506905925346-21bda4d32df4'),
+    image: LOCAL('meron'),
     tagline: 'פסגות, אוויר צלול ויער אורן',
     keywords: ['הר', 'פסגה', 'יער', 'גליל', 'צפון', 'טיול'],
     strollerFriendly: false,
@@ -53,7 +58,7 @@ export const TRIP_META = {
     baseReviews: 14,
   },
   'שמורת החולה': {
-    image: UNSPLASH('1505765050516-f72dcac9c60e'),
+    image: LOCAL('hula'),
     tagline: 'אגמים, ציפורים ושבילי טבע רגועים',
     keywords: ['ציפורים', 'אגם', 'שמורה', 'משפחה', 'צפון', 'טבע'],
     strollerFriendly: true,
@@ -63,7 +68,7 @@ export const TRIP_META = {
     baseReviews: 18,
   },
   'נחל יהודייה - רמת הגולן': {
-    image: UNSPLASH('1469474968028-56623f02e42e'),
+    image: LOCAL('yehudiya'),
     tagline: 'קניונים, מים קרים וקפיצות לבריכות',
     keywords: ['קניון', 'מים', 'גולן', 'קפיצה', 'מפל', 'צפון'],
     strollerFriendly: false,
@@ -73,7 +78,7 @@ export const TRIP_META = {
     baseReviews: 27,
   },
   'חוף הבונים': {
-    image: UNSPLASH('1507525428034-b723cf961d3e'),
+    image: LOCAL('habonim'),
     tagline: 'חוף ים, סלעים ושקיעה על הים התיכון',
     keywords: ['חוף', 'ים', 'שקיעה', 'מרכז', 'קיץ', 'משפחה'],
     strollerFriendly: true,
@@ -83,7 +88,7 @@ export const TRIP_META = {
     baseReviews: 16,
   },
   'פארק הירקון - תל אביב': {
-    image: UNSPLASH('1502082553048-f009c37129b9'),
+    image: LOCAL('yarkon'),
     tagline: 'שבילים ירוקים, אופניים ופיקניק',
     keywords: ['פארק', 'אופניים', 'פיקניק', 'ירקון', 'תל אביב', 'מרכז'],
     strollerFriendly: true,
@@ -93,7 +98,7 @@ export const TRIP_META = {
     baseReviews: 20,
   },
   'תל דן': {
-    image: UNSPLASH('1441974231531-c6227db76b6e'),
+    image: LOCAL('tel-dan'),
     tagline: 'מעיינות, נחל וצמחייה עבותה בגליל',
     keywords: ['מעיין', 'נחל', 'גליל', 'צפון', 'מים', 'טבע'],
     strollerFriendly: true,
@@ -103,7 +108,7 @@ export const TRIP_META = {
     baseReviews: 17,
   },
   'נחל משושים': {
-    image: UNSPLASH('1519681393784-d120267933ba'),
+    image: LOCAL('meshushim'),
     tagline: 'בריכות טבעיות וקפיצות למים בגליל העליון',
     keywords: ['נחל', 'מים', 'קפיצה', 'גליל', 'צפון', 'קיץ'],
     strollerFriendly: false,
@@ -113,7 +118,7 @@ export const TRIP_META = {
     baseReviews: 21,
   },
   'תמנע - ערבה': {
-    image: UNSPLASH('1500534623283-312aade485b7'),
+    image: LOCAL('timna'),
     tagline: 'מכרה נחושת עתיק, עמודי שלמה ונוף מדברי',
     keywords: ['מדבר', 'ערבה', 'דרום', 'היסטוריה', 'תצפית', 'נגב'],
     strollerFriendly: false,
@@ -123,7 +128,7 @@ export const TRIP_META = {
     baseReviews: 15,
   },
   'גן לאומי בית גוברין': {
-    image: UNSPLASH('1452421822248-d4c2b47f0c81'),
+    image: LOCAL('beit-guvrin'),
     tagline: 'מערות, ארכיאולוגיה ושבילי טיול בין הכפרים',
     keywords: ['מערות', 'ארכיאולוגיה', 'דרום', 'שמורה', 'היסטוריה'],
     strollerFriendly: true,
@@ -133,7 +138,7 @@ export const TRIP_META = {
     baseReviews: 13,
   },
   'נחל דרגה': {
-    image: UNSPLASH('1470770841072-f978cf4d019e'),
+    image: LOCAL('darga'),
     tagline: 'קניון תלול, מפלים ומסלול אתגרי בגליל',
     keywords: ['קניון', 'מפל', 'גליל', 'צפון', 'קשה', 'מים'],
     strollerFriendly: false,
@@ -143,7 +148,7 @@ export const TRIP_META = {
     baseReviews: 19,
   },
   'קיסריה - שביל החוף': {
-    image: UNSPLASH('1499793983690-b29da567a1e0'),
+    image: LOCAL('caesarea'),
     tagline: 'חוף, שרידים עתיקים וטיילת על הים',
     keywords: ['חוף', 'ים', 'היסטוריה', 'מרכז', 'קיסריה', 'שקיעה'],
     strollerFriendly: true,
@@ -153,7 +158,7 @@ export const TRIP_META = {
     baseReviews: 18,
   },
   'נחל שניר': {
-    image: UNSPLASH('1518496435935-bc5c23b92b94'),
+    image: LOCAL('snir'),
     tagline: 'יער צפוף, מים זורמים ושביל מוצל',
     keywords: ['נחל', 'מים', 'גליל', 'צפון', 'יער', 'משפחה'],
     strollerFriendly: true,
@@ -163,7 +168,7 @@ export const TRIP_META = {
     baseReviews: 16,
   },
   'הר תבור': {
-    image: UNSPLASH('1506905925346-21bda4d32df4'),
+    image: LOCAL('tavor'),
     tagline: 'עלייה לפסגה עם נוף מרהיב על הגליל',
     keywords: ['הר', 'פסגה', 'גליל', 'צפון', 'תצפית', 'טיול'],
     strollerFriendly: false,
@@ -173,7 +178,7 @@ export const TRIP_META = {
     baseReviews: 14,
   },
   'מצפה רמון': {
-    image: UNSPLASH('1418065463797-164f8f4c2a66'),
+    image: LOCAL('mitzpe-ramon'),
     tagline: 'תצפית על מכתש רמון — אחד הנופים היפים בישראל',
     keywords: ['מכתש', 'תצפית', 'נגב', 'שקיעה', 'מדבר', 'רמון'],
     strollerFriendly: true,
@@ -183,7 +188,7 @@ export const TRIP_META = {
     baseReviews: 26,
   },
   'עין בוקק': {
-    image: UNSPLASH('1540206351-d645252ee167'),
+    image: LOCAL('ein-bokek'),
     tagline: 'מעיינות חמים, מרחצאות ונוף על ים המלח',
     keywords: ['מעיין', 'ים המלח', 'דרום', 'מרחצאות', 'מדבר', 'רגיעה'],
     strollerFriendly: true,
@@ -193,7 +198,7 @@ export const TRIP_META = {
     baseReviews: 12,
   },
   'חוף דור': {
-    image: UNSPLASH('1505118387-ceecb8fa54ff'),
+    image: LOCAL('dor'),
     tagline: 'חול לבן, גלים ורוח ים בחוף הכרמל',
     keywords: ['חוף', 'ים', 'כרמל', 'מרכז', 'קיץ', 'גלים'],
     strollerFriendly: true,
@@ -203,7 +208,7 @@ export const TRIP_META = {
     baseReviews: 15,
   },
   'נחל עיון': {
-    image: UNSPLASH('1470074568968-0783d8a285ce'),
+    image: LOCAL('ayun'),
     tagline: 'מפלים מרהיבים ושביל לאורך הנחל בגליל העליון',
     keywords: ['מפל', 'נחל', 'גליל', 'צפון', 'מים', 'טבע'],
     strollerFriendly: false,
@@ -213,7 +218,7 @@ export const TRIP_META = {
     baseReviews: 20,
   },
   'ציפורi העתיקה': {
-    image: UNSPLASH('1524661135-423995f22d0f'),
+    image: LOCAL('zippori'),
     tagline: 'פסיפסים ושרידים מהתקופה הרומית',
     keywords: ['ארכיאולוגיה', 'היסטוריה', 'גליל', 'צפון', 'עתיקות'],
     strollerFriendly: true,
@@ -223,7 +228,7 @@ export const TRIP_META = {
     baseReviews: 11,
   },
   'נחל הזורעים': {
-    image: UNSPLASH('1441974231531-c6227db76b6e'),
+    image: LOCAL('hazoreim'),
     tagline: 'מסלול מים קליל ליד הכינרת',
     keywords: ['נחל', 'כינרת', 'צפון', 'מים', 'קיץ', 'משפחה'],
     strollerFriendly: true,
@@ -233,7 +238,7 @@ export const TRIP_META = {
     baseReviews: 13,
   },
   'עתיקות בית שאן': {
-    image: UNSPLASH('1569163131193-53a390815f61'),
+    image: LOCAL('beit-shean'),
     tagline: 'תיאטרון רומי, עמודים ועיר עתיקה מרשימה',
     keywords: ['ארכיאולוגיה', 'היסטוריה', 'צפון', 'עמק', 'תיאטרון'],
     strollerFriendly: true,
@@ -245,20 +250,25 @@ export const TRIP_META = {
 }
 
 const AREA_FALLBACK = {
-  צפון: UNSPLASH('1519681393784-d120267933ba'),
-  דרום: UNSPLASH('1500534623283-312aade485b7'),
-  נגב: UNSPLASH('1426604966848-d7adac402bff'),
-  מרכז: UNSPLASH('1439066615861-d1af74d74000'),
+  צפון: LOCAL('yehudiya'),
+  דרום: LOCAL('ramon'),
+  נגב: LOCAL('mitzpe-ramon'),
+  מרכז: LOCAL('yarkon'),
 }
 
 export function getTripMeta(trip) {
   const name = trip?.nameTraveler || ''
   if (TRIP_META[name]) return TRIP_META[name]
   return {
-    image: AREA_FALLBACK[trip?.area] || UNSPLASH('1470770841072-f978cf4d019e'),
+    image: AREA_FALLBACK[trip?.area] || LOCAL('ramon'),
     tagline: `מסלול טיול באזור ${trip?.area || 'ישראל'}`,
     keywords: [trip?.area, trip?.difficultyLevel].filter(Boolean),
     baseRating: 4.0,
     baseReviews: 5,
   }
 }
+
+// Hero slideshow — unique trip photos, rotates on the home page
+export const HERO_SLIDES = [
+  ...new Set(Object.values(TRIP_META).map((m) => m.image).filter(Boolean)),
+]

@@ -681,22 +681,41 @@ button {
 .hero-full {
   position: relative;
   min-height: 520px;
-  background-size: cover;
-  background-position: center;
   display: flex;
   align-items: flex-end;
+  overflow: hidden;
+}
+
+.hero-full-slides {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-full-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.4s ease-in-out;
+}
+
+.hero-full-slide.active {
+  opacity: 1;
 }
 
 .hero-full::before {
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: linear-gradient(to top, rgba(27, 67, 50, 0.88) 0%, rgba(27, 67, 50, 0.35) 55%, rgba(0, 0, 0, 0.15) 100%);
 }
 
 .hero-full-inner {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   padding: 60px 20px 56px;
   color: #fff;
   max-width: 720px;
