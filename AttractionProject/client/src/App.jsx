@@ -27,7 +27,7 @@ export default function App() {
         </main>
         <footer className="footer">
           <div className="container">
-            🌿 מסלולי טיול בישראל · React + Spring Boot
+            🌿 מסלולי טיול בישראל ·
           </div>
         </footer>
       </div>

@@ -82,7 +82,7 @@ export default function Attractions() {
       <div className="page-header">
         <div className="page-title">
           <h2>🗺️ כל המסלולים</h2>
-          <p>סנן/י לפי אזור, גיל, קושי, זמן, נגישות — או חפש/י מילת מפתח</p>
+          <p>{filtered.length} מסלולים · לחצ/י על "סינון וחיפוש" לסינון מתקדם</p>
         </div>
         <button className="btn btn-primary" onClick={() => setOpen(true)}>
           + מסלול חדש

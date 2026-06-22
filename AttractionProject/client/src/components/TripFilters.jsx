@@ -1,8 +1,7 @@
+import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AREAS, DIFFICULTY_LEVELS, AGES } from '../constants/enums'
 import { TIME_RANGES, FAMILY_FILTERS, countActiveFilters } from '../utils/tripUtils'
-
-const FILTER_KEYS = ['q', 'area', 'age', 'difficulty', 'time', 'family']
 
 export function useTripFilters() {
   const [params, setParams] = useSearchParams()
@@ -29,7 +28,25 @@ export function useTripFilters() {
 }
 
 export default function TripFilters({ filters, setFilter, clearAll, activeCount, resultCount }) {
+  const [open, setOpen] = useState(activeCount > 0)
+
   return (
+    <div className="filters-wrap">
+      <div className="filters-toggle-row">
+        <button
+          type="button"
+          className={`btn btn-ghost filters-toggle-btn${open ? ' open' : ''}`}
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+        >
+          <span className="filters-toggle-icon">{open ? '▲' : '▼'}</span>
+          סינון וחיפוש
+          {activeCount > 0 && <span className="filters-active-badge">{activeCount}</span>}
+        </button>
+        <span className="filters-result-inline">{resultCount} מסלולים</span>
+      </div>
+
+      {open && (
     <div className="filters-panel">
       <div className="filters-search-row">
         <div className="search-box">
@@ -137,6 +154,8 @@ export default function TripFilters({ filters, setFilter, clearAll, activeCount,
       </div>
 
       <p className="filters-result">{resultCount} מסלולים תואמים</p>
+    </div>
+      )}
     </div>
   )
 }

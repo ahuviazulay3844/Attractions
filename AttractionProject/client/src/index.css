@@ -1153,16 +1153,73 @@ button {
 }
 
 /* Filters panel */
+.filters-wrap {
+  margin-bottom: 28px;
+}
+
+.filters-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filters-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.filters-toggle-btn.open {
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  border-color: var(--primary-soft);
+}
+
+.filters-toggle-icon {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.filters-active-badge {
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  padding: 0 6px;
+}
+
+.filters-result-inline {
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  font-weight: 600;
+}
+
 .filters-panel {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 24px;
-  margin-bottom: 28px;
+  margin-top: 12px;
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
   gap: 18px;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
 }
 
 .filters-search-row {
