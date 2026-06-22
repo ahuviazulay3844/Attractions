@@ -1,16 +1,17 @@
 import { useState } from 'react'
 import { Icon } from './Icons'
 
-export function Input({ label, ...props }) {
+export function Input({ label, error, ...props }) {
   return (
     <div className="field">
       {label && <label>{label}</label>}
-      <input {...props} />
+      <input className={error ? 'input-error' : ''} {...props} />
+      {error && <span className="field-error">{error}</span>}
     </div>
   )
 }
 
-export function PasswordInput({ label, value, onChange, ...props }) {
+export function PasswordInput({ label, error, value, onChange, ...props }) {
   const [show, setShow] = useState(false)
 
   return (
@@ -22,7 +23,7 @@ export function PasswordInput({ label, value, onChange, ...props }) {
           type={show ? 'text' : 'password'}
           value={value}
           onChange={onChange}
-          className="password-input"
+          className={`password-input${error ? ' input-error' : ''}`}
         />
         <button
           type="button"
@@ -34,6 +35,7 @@ export function PasswordInput({ label, value, onChange, ...props }) {
           <Icon name={show ? 'eye-off' : 'eye'} size={18} />
         </button>
       </div>
+      {error && <span className="field-error">{error}</span>}
     </div>
   )
 }

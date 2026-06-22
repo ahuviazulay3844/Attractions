@@ -1,6 +1,14 @@
 const USERS_KEY = 'trip-app-users'
 const SESSION_KEY = 'trip-app-session'
 
+export const AUTH_ERRORS = {
+  INVALID_EMAIL: 'INVALID_EMAIL',
+  EMAIL_NOT_FOUND: 'EMAIL_NOT_FOUND',
+  WRONG_PASSWORD: 'WRONG_PASSWORD',
+}
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
 function loadUsers() {
   try {
     const raw = localStorage.getItem(USERS_KEY)
@@ -17,6 +25,24 @@ function saveUsers(users) {
 function saveSession(user) {
   if (user) localStorage.setItem(SESSION_KEY, JSON.stringify({ id: user.id }))
   else localStorage.removeItem(SESSION_KEY)
+}
+
+function authError(message, code, extra = {}) {
+  const err = new Error(message)
+  err.code = code
+  Object.assign(err, extra)
+  return err
+}
+
+export function validateEmail(email) {
+  const trimmed = email?.trim().toLowerCase()
+  if (!trimmed) {
+    return { valid: false, message: 'יש להזין כתובת אימייל' }
+  }
+  if (!EMAIL_REGEX.test(trimmed)) {
+    return { valid: false, message: 'כתובת האימייל אינה תקינה' }
+  }
+  return { valid: true, email: trimmed }
 }
 
 export function getCurrentUser() {
@@ -39,25 +65,31 @@ export function isLoggedIn() {
 
 export function register({ name, email, password }) {
   const trimmedName = name?.trim()
-  const trimmedEmail = email?.trim().toLowerCase()
+  const emailCheck = validateEmail(email)
   const trimmedPassword = password?.trim()
 
-  if (!trimmedName || !trimmedEmail || !trimmedPassword) {
-    throw new Error('יש למלא את כל השדות')
+  if (!trimmedName) {
+    throw new Error('יש להזין שם מלא')
+  }
+  if (!emailCheck.valid) {
+    throw authError(emailCheck.message, AUTH_ERRORS.INVALID_EMAIL)
+  }
+  if (!trimmedPassword) {
+    throw new Error('יש להזין סיסמה')
   }
   if (trimmedPassword.length < 4) {
     throw new Error('סיסמה קצרה מדי (לפחות 4 תווים)')
   }
 
   const users = loadUsers()
-  if (users.some((u) => u.email === trimmedEmail)) {
+  if (users.some((u) => u.email === emailCheck.email)) {
     throw new Error('כתובת האימייל כבר רשומה')
   }
 
   const user = {
     id: Date.now(),
     name: trimmedName,
-    email: trimmedEmail,
+    email: emailCheck.email,
     password: trimmedPassword,
   }
   users.push(user)
@@ -69,10 +101,29 @@ export function register({ name, email, password }) {
 }
 
 export function login({ email, password }) {
-  const trimmedEmail = email?.trim().toLowerCase()
+  const emailCheck = validateEmail(email)
+  if (!emailCheck.valid) {
+    throw authError(emailCheck.message, AUTH_ERRORS.INVALID_EMAIL)
+  }
+
   const trimmedPassword = password?.trim()
-  const user = loadUsers().find((u) => u.email === trimmedEmail && u.password === trimmedPassword)
-  if (!user) throw new Error('אימייל או סיסמה שגויים')
+  if (!trimmedPassword) {
+    throw new Error('יש להזין סיסמה')
+  }
+
+  const users = loadUsers()
+  const user = users.find((u) => u.email === emailCheck.email)
+
+  if (!user) {
+    throw authError('האימייל לא רשום במערכת', AUTH_ERRORS.EMAIL_NOT_FOUND, {
+      email: emailCheck.email,
+    })
+  }
+
+  if (user.password !== trimmedPassword) {
+    throw authError('הסיסמה שגויה', AUTH_ERRORS.WRONG_PASSWORD)
+  }
+
   saveSession(user)
   window.dispatchEvent(new Event('auth-changed'))
   const { password: _, ...safe } = user

@@ -521,6 +521,18 @@ button {
   box-shadow: 0 0 0 3px var(--primary-soft);
 }
 
+.input-error,
+.password-input.input-error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
+.field-error {
+  color: var(--danger);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
 /* States */
 .state {
   text-align: center;
