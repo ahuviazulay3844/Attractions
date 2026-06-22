@@ -71,7 +71,7 @@ npm run dev
 - **הצג/הסתר סיסמה** (עין) בטופס התחברות והרשמה
 
 ### גלריה
-- תמונות Unsplash תואמות לכל מסלול (client-side mapping ב-`tripImages.js`)
+- תמונות SVG מקומיות לכל מסלול — ללא תלות באינטרנט (לא נחסמות ברשת)
 
 ---
 
@@ -155,7 +155,7 @@ Endpoints נפוצים: `GET /getAll`, `GET /get/{id}`, `POST /add`, `PUT /updat
 
 ## הערות חשובות
 
-- **תמונות מסלולים** — mapping ב-client (`client/src/constants/tripImages.js`), לא בשרver
+- **תמונות מסלולים** — SVG מקומי ב-client (`tripImageArt.js` + `tripImages.js`), ללא קישורים חיצוניים
 - **מועדפים / משתמשים** — localStorage בדפדפן (לא ב-DB)
 - **JsonIgnore** על getters ב-`Attraction` / `Traveler` — מונע JSON אינסופי בתגובות
 
