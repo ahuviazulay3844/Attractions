@@ -1,12 +1,23 @@
-const KEY = 'saved-trips'
+import { getCurrentUser } from './auth'
 
-export function getSavedTripIds() {
+function favoritesKey() {
+  const user = getCurrentUser()
+  return user ? `saved-trips-${user.id}` : null
+}
+
+function loadIds(key) {
   try {
-    const raw = localStorage.getItem(KEY)
+    const raw = localStorage.getItem(key)
     return raw ? JSON.parse(raw) : []
   } catch {
     return []
   }
+}
+
+export function getSavedTripIds() {
+  const key = favoritesKey()
+  if (!key) return []
+  return loadIds(key)
 }
 
 export function isTripSaved(tripId) {
@@ -14,16 +25,22 @@ export function isTripSaved(tripId) {
 }
 
 export function toggleSavedTrip(tripId) {
+  const key = favoritesKey()
+  if (!key) return { saved: false, needLogin: true }
+
   const id = Number(tripId)
-  const ids = getSavedTripIds()
+  const ids = loadIds(key)
   const next = ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]
-  localStorage.setItem(KEY, JSON.stringify(next))
+  localStorage.setItem(key, JSON.stringify(next))
   window.dispatchEvent(new Event('favorites-changed'))
-  return next.includes(id)
+  return { saved: next.includes(id), needLogin: false }
 }
 
 export function removeSavedTrip(tripId) {
+  const key = favoritesKey()
+  if (!key) return
   const id = Number(tripId)
-  const next = getSavedTripIds().filter((x) => x !== id)
-  localStorage.setItem(KEY, JSON.stringify(next))
+  const next = loadIds(key).filter((x) => x !== id)
+  localStorage.setItem(key, JSON.stringify(next))
+  window.dispatchEvent(new Event('favorites-changed'))
 }

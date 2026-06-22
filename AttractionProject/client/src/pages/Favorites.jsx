@@ -1,20 +1,28 @@
 import { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { attractionsApi } from '../api/attractions'
 import { commentsApi } from '../api/comments'
 import { getSavedTripIds } from '../utils/favorites'
+import { useAuth } from '../context/AuthContext'
 import TripCard from '../components/TripCard'
 import { Loading, ErrorState, EmptyState } from '../components/States'
-import { Link } from 'react-router-dom'
+import { Icon } from '../components/Icons'
 
 export default function Favorites() {
+  const { user, isLoggedIn } = useAuth()
+  const location = useLocation()
   const [trips, setTrips] = useState([])
   const [commentCounts, setCommentCounts] = useState({})
   const [allComments, setAllComments] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [savedIds, setSavedIds] = useState(() => getSavedTripIds())
+  const [savedIds, setSavedIds] = useState([])
 
   const load = () => {
+    if (!isLoggedIn) {
+      setLoading(false)
+      return
+    }
     setLoading(true)
     setError(null)
     const ids = getSavedTripIds()
@@ -35,19 +43,45 @@ export default function Favorites() {
       .finally(() => setLoading(false))
   }
 
-  useEffect(load, [])
+  useEffect(load, [isLoggedIn, user?.id])
 
   useEffect(() => {
     const refresh = () => load()
     window.addEventListener('favorites-changed', refresh)
-    return () => window.removeEventListener('favorites-changed', refresh)
-  }, [])
+    window.addEventListener('auth-changed', refresh)
+    return () => {
+      window.removeEventListener('favorites-changed', refresh)
+      window.removeEventListener('auth-changed', refresh)
+    }
+  }, [isLoggedIn, user?.id])
+
+  if (!isLoggedIn) {
+    return (
+      <div className="container page">
+        <EmptyState
+          icon={<Icon name="heart-outline" size={48} />}
+          title="מועדפים — למשתמשים מחוברים"
+          text="התחבר/י או הירשם/י כדי לשמור מסלולים אישיים. אפשר גם לגלוש בלי חשבון."
+          action={
+            <div className="auth-actions-row">
+              <Link to={`/login?return=${encodeURIComponent(location.pathname)}`} className="btn btn-primary">
+                התחברות
+              </Link>
+              <Link to={`/register?return=${encodeURIComponent(location.pathname)}`} className="btn btn-ghost">
+                הרשמה
+              </Link>
+            </div>
+          }
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="container page">
       <div className="page-header">
         <div className="page-title">
-          <h2>❤️ המסלולים שלי</h2>
+          <h2><Icon name="heart" size={24} /> המסלולים של {user.name}</h2>
           <p>{savedIds.length} מסלולים שמורים לתכנון הטיול הבא</p>
         </div>
         <Link to="/attractions" className="btn btn-ghost">גלה עוד מסלולים</Link>
@@ -59,7 +93,7 @@ export default function Favorites() {
         <ErrorState message={error} onRetry={load} />
       ) : trips.length === 0 ? (
         <EmptyState
-          icon="❤️"
+          icon={<Icon name="heart-outline" size={48} />}
           title="עדיין אין מסלולים שמורים"
           text='לחצ/י על "שמור מסלול" בדף מסלול כדי לשמור אותו כאן'
           action={<Link to="/attractions" className="btn btn-primary">לכל המסלולים</Link>}

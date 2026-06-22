@@ -1,8 +1,10 @@
 package com.example.attractionproject.Controller;
 import com.example.attractionproject.Dto.CommentsDto;
 import com.example.attractionproject.Repository.CommentsRepository;
+import com.example.attractionproject.Repository.TravelerRepository;
 import com.example.attractionproject.Service.MapStructMapper;
 import com.example.attractionproject.model.Comments;
+import com.example.attractionproject.model.Traveler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,12 +15,14 @@ import java.util.List;
 @RequestMapping("api/Comments")//API prefix
 public class CommentsController {
     public final CommentsRepository commentsRepository;
+    private final TravelerRepository travelerRepository;
     private  final MapStructMapper mapStructImp;
 
     @Autowired
 
-    public CommentsController(CommentsRepository commentsRepository,MapStructMapper mapStructImp) {
+    public CommentsController(CommentsRepository commentsRepository, TravelerRepository travelerRepository, MapStructMapper mapStructImp) {
         this.commentsRepository = commentsRepository;
+        this.travelerRepository = travelerRepository;
         this.mapStructImp=mapStructImp;
     }
     //returns list of comments
@@ -51,7 +55,15 @@ public class CommentsController {
             comments.setRating(5);//default star rating
         }
         Comments newComments=commentsRepository.save(comments);
-        return newComments;
+        return reloadComment(newComments.getIdComments());
+    }
+    private Comments reloadComment(int id) {
+        Comments comment = commentsRepository.findById(id).orElse(null);
+        if (comment != null && comment.getTraveler() != null) {
+            Traveler fullTraveler = travelerRepository.findById(comment.getTraveler().getIdTraveler()).orElse(null);
+            comment.setTraveler(fullTraveler);
+        }
+        return comment;
     }
     @PostMapping("/addDto")
     public CommentsDto AddcommentsDto(@RequestBody CommentsDto commentsDto)

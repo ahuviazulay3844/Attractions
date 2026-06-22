@@ -7,9 +7,9 @@ export const TIME_RANGES = [
 ]
 
 export const FAMILY_FILTERS = [
-  { id: 'stroller', label: '🍼 מתאים לעגלות' },
-  { id: 'kids', label: '👶 מתאים לילדים' },
-  { id: 'family', label: '👨‍👩‍👧 מתאים למשפחות' },
+  { id: 'stroller', label: 'מתאים לעגלות' },
+  { id: 'kids', label: 'מתאים לילדים' },
+  { id: 'family', label: 'מתאים למשפחות' },
 ]
 
 export function parseTripMinutes(timeStr) {

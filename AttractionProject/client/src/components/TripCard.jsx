@@ -4,6 +4,7 @@ import { DIFFICULTY_BADGE } from '../constants/enums'
 import { getAccessibility, formatDuration } from '../utils/tripUtils'
 import { getTripRatingStats } from '../utils/ratings'
 import { StarDisplay } from './StarRating'
+import { Icon } from './Icons'
 import SaveTripButton from './SaveTripButton'
 
 export default function TripCard({ trip, commentCount = 0, allComments = [] }) {
@@ -34,17 +35,17 @@ export default function TripCard({ trip, commentCount = 0, allComments = [] }) {
           </div>
           <p className="trip-card-tagline">{meta.tagline}</p>
           <div className="access-badges">
-            {acc.strollerFriendly && <span className="badge badge-green">🍼 עגלות</span>}
-            {acc.kidFriendly && <span className="badge badge-blue">👶 ילדים</span>}
-            {acc.familyFriendly && <span className="badge badge-sand">👨‍👩‍👧 משפחות</span>}
+            {acc.strollerFriendly && <span className="badge badge-green">עגלות</span>}
+            {acc.kidFriendly && <span className="badge badge-blue">ילדים</span>}
+            {acc.familyFriendly && <span className="badge badge-sand">משפחות</span>}
           </div>
           <div className="trip-card-meta">
-            <span>⏱ {formatDuration(trip.timeAttraction)}</span>
-            <span>👤 {trip.age}</span>
+            <span><Icon name="clock" size={14} /> {formatDuration(trip.timeAttraction)}</span>
+            <span>{trip.age}</span>
             <span className="trip-price">{price}</span>
           </div>
           <div className="trip-card-comments">
-            💬 {commentCount} {commentCount === 1 ? 'תגובה' : 'תגובות'}
+            <Icon name="message" size={14} /> {commentCount} {commentCount === 1 ? 'תגובה' : 'תגובות'}
           </div>
         </div>
       </Link>

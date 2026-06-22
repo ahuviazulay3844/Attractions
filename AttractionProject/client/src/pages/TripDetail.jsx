@@ -7,14 +7,21 @@ import { getTripMeta } from '../constants/tripImages'
 import { DIFFICULTY_BADGE } from '../constants/enums'
 import { getAccessibility, formatDuration } from '../utils/tripUtils'
 import { getTripRatingStats } from '../utils/ratings'
+import { useAuth } from '../context/AuthContext'
 import { Loading, ErrorState } from '../components/States'
 import { Input } from '../components/Field'
 import { StarDisplay, StarInput } from '../components/StarRating'
 import SaveTripButton from '../components/SaveTripButton'
+import { Icon } from '../components/Icons'
 import { useToast } from '../components/Toast'
+
+function commentAuthorName(comment) {
+  return comment?.traveler?.nameOfTraveler?.trim() || null
+}
 
 export default function TripDetail() {
   const { id } = useParams()
+  const { user } = useAuth()
   const toast = useToast()
   const [trip, setTrip] = useState(null)
   const [comments, setComments] = useState([])
@@ -24,6 +31,10 @@ export default function TripDetail() {
   const [content, setContent] = useState('')
   const [stars, setStars] = useState(5)
   const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    if (user?.name) setName(user.name)
+  }, [user])
 
   const load = () => {
     setLoading(true)
@@ -43,12 +54,16 @@ export default function TripDetail() {
 
   const submitComment = async (e) => {
     e.preventDefault()
-    if (!name.trim() || !content.trim() || !stars) return
+    const authorName = user?.name || name.trim()
+    if (!authorName || !content.trim() || !stars) {
+      toast('יש למלא שם ותגובה', 'error')
+      return
+    }
     setSaving(true)
     try {
       const traveler = await travelersApi.add({
-        nameOfTraveler: name.trim(),
-        emailOfTraveler: '',
+        nameOfTraveler: authorName,
+        emailOfTraveler: user?.email || '',
         ageOfTraveler: 0,
       })
       const newComment = await commentsApi.add({
@@ -57,7 +72,16 @@ export default function TripDetail() {
         content: content.trim(),
         rating: stars,
       })
-      setComments((prev) => [newComment, ...prev])
+      const withName = {
+        ...newComment,
+        traveler: {
+          ...newComment.traveler,
+          nameOfTraveler: authorName,
+          emailOfTraveler: user?.email || '',
+        },
+      }
+      setComments((prev) => [withName, ...prev])
+      if (!user) setName('')
       setContent('')
       toast('התגובה והדירוג נוספו בהצלחה!')
     } catch (err) {
@@ -96,19 +120,19 @@ export default function TripDetail() {
               {trip.difficultyLevel}
             </span>
             <span className="badge badge-sand">{trip.area}</span>
-            <span className="badge badge-blue">👤 {trip.age}</span>
-            <span className="badge badge-blue">⏱ {formatDuration(trip.timeAttraction)}</span>
+            <span className="badge badge-blue">{trip.age}</span>
+            <span className="badge badge-blue">{formatDuration(trip.timeAttraction)}</span>
             <span className="badge badge-green">{price}</span>
-            {acc.strollerFriendly && <span className="badge badge-green">🍼 מתאים לעגלות</span>}
-            {acc.kidFriendly && <span className="badge badge-blue">👶 מתאים לילדים</span>}
-            {acc.familyFriendly && <span className="badge badge-sand">👨‍👩‍👧 מתאים למשפחות</span>}
+            {acc.strollerFriendly && <span className="badge badge-green">מתאים לעגלות</span>}
+            {acc.kidFriendly && <span className="badge badge-blue">מתאים לילדים</span>}
+            {acc.familyFriendly && <span className="badge badge-sand">מתאים למשפחות</span>}
           </div>
         </div>
       </div>
 
       <div className="container trip-detail-content">
         <section className="trip-about">
-          <h2>📋 מידע על המסלול</h2>
+          <h2>מידע על המסלול</h2>
           <p>{meta.tagline}</p>
           {meta.keywords?.length > 0 && (
             <div className="keyword-tags">
@@ -131,18 +155,25 @@ export default function TripDetail() {
 
         <section className="comments-section">
           <div className="comments-header">
-            <h2>💬 תגובות על המסלול</h2>
+            <h2><Icon name="message" size={22} /> תגובות על המסלול</h2>
             <span className="comments-count">{comments.length} תגובות</span>
           </div>
 
           <form className="comment-form" onSubmit={submitComment}>
-            <Input
-              label="השם שלך"
-              placeholder="איך קוראים לך?"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+            {user ? (
+              <p className="comment-as-user">
+                <Icon name="user" size={16} />
+                מפרסם/ת בתור <strong>{user.name}</strong>
+              </p>
+            ) : (
+              <Input
+                label="השם שלך"
+                placeholder="איך קוראים לך?"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            )}
             <StarInput value={stars} onChange={setStars} label="הדירוג שלך (כוכבים)" />
             <div className="field">
               <label>התגובה שלך</label>
@@ -164,25 +195,24 @@ export default function TripDetail() {
             {comments.length === 0 ? (
               <p className="comments-empty">עדיין אין תגובות — תהיה/י הראשון/ה!</p>
             ) : (
-              comments.map((c) => (
-                <article className="comment-item" key={c.idComments}>
-                  <div className="comment-avatar">
-                    {(c.traveler?.nameOfTraveler || '?').charAt(0)}
-                  </div>
-                  <div className="comment-body">
-                    <div className="comment-top">
-                      <div className="comment-top-main">
-                        <strong>{c.traveler?.nameOfTraveler || 'מטייל/ת'}</strong>
-                        {c.rating >= 1 && (
-                          <StarDisplay value={c.rating} size="sm" />
-                        )}
+              comments.map((c) => {
+                const author = commentAuthorName(c) || 'אנונימי/ת'
+                return (
+                  <article className="comment-item" key={c.idComments}>
+                    <div className="comment-avatar">{author.charAt(0)}</div>
+                    <div className="comment-body">
+                      <div className="comment-top">
+                        <div className="comment-top-main">
+                          <strong>{author}</strong>
+                          {c.rating >= 1 && <StarDisplay value={c.rating} size="sm" />}
+                        </div>
+                        {c.localDate && <span className="comment-date">{c.localDate}</span>}
                       </div>
-                      {c.localDate && <span className="comment-date">{c.localDate}</span>}
+                      <p>{c.content}</p>
                     </div>
-                    <p>{c.content}</p>
-                  </div>
-                </article>
-              ))
+                  </article>
+                )
+              })
             )}
           </div>
         </section>
