@@ -1,15 +1,14 @@
-# AttractionProject
+# AttractionProject — Server (Spring Boot)
 
-אפליקציית Spring Boot לניהול אטרקציות ומסלולי טיול — מטיילים, תגובות ותמונות.
+שרת REST API לניהול מסלולי טיול, מטיילים, תגובות ותמונות.
 
 ## טכנולוגיות
 
 - Java 17
 - Spring Boot 3.4.5
 - Spring Data JPA
-- H2 Database
+- H2 Database (קובץ מקומי)
 - MapStruct
-- Lombok
 - Maven
 
 ## הרצה
@@ -17,39 +16,50 @@
 ### דרישות
 
 - JDK 17+
-- Maven (או `mvnw` / `mvnw.cmd`)
 
 ### הפעלה
-
-```bash
-./mvnw spring-boot:run
-```
-
-ב-Windows:
 
 ```cmd
 mvnw.cmd spring-boot:run
 ```
 
-השרת עולה על: **http://localhost:8585**
+השרת: **http://localhost:8585**
 
 ### H2 Console
 
-- URL: http://localhost:8585/h2-console
-- JDBC URL: `jdbc:h2:./AttractionProject1`
-- Username: `sa`
-- Password: `1234`
+| | |
+|--|--|
+| URL | http://localhost:8585/h2-console |
+| JDBC | `jdbc:h2:./AttractionProject1` |
+| User | `sa` |
+| Password | `1234` |
 
-## מבנה הפרויקט
+## מבנה
 
 ```
-src/main/java/com/example/attractionproject/
+server/src/main/java/com/example/attractionproject/
 ├── Controller/     # REST API
-├── Dto/            # Data Transfer Objects + Enums
+├── Dto/            # DTOs + Enums (קל, בינוני, קשה...)
 ├── model/          # JPA Entities
 ├── Repository/     # Spring Data JPA
-└── Service/        # MapStruct Mapper
+├── Service/        # MapStruct Mapper
+└── config/         # CORS (WebConfig.java)
 ```
+
+## ישויות
+
+| ישות | שדות עיקריים |
+|------|--------------|
+| **Attraction** | שם, זמן, רמת קושי, גיל, מחיר, אזור |
+| **Traveler** | שם, מייל, גיל |
+| **Comments** | תוכן, **rating (1–5)**, תאריך, קישור למסלול ולמטייל |
+| **ImageOfAttraction** | קובץ תמונה, קישור למסלול |
+
+### Enums (ערכים בעברית)
+
+- **DifficultyLevel**: קל, בינוני, קשה
+- **Age**: תינוקות, ילדים, נערים, מבוגרים
+- **Area**: צפון, דרום, מרכז, נגב
 
 ## API Endpoints
 
@@ -57,88 +67,91 @@ src/main/java/com/example/attractionproject/
 
 | Method | Path | תיאור |
 |--------|------|--------|
-| GET | `/getAll` | כל האטרקציות |
-| GET | `/getAllDto` | אטרקציות כ-DTO |
-| GET | `/get/{id}` | אטרקציה לפי id |
-| GET | `/getDto/{id}` | אטרקציה לפי id כ-DTO |
-| POST | `/add` | הוספת אטרקציה |
-| POST | `/addDto` | הוספת אטרקציה (DTO) |
-| PUT | `/update` | עדכון אטרקציה |
-| PUT | `/updateDto` | עדכון אטרקציה (DTO) |
-| DELETE | `/delete/{id}` | מחיקת אטרקציה |
+| GET | `/getAll` | כל המסלולים |
+| GET | `/getAllDto` | כ-DTO |
+| GET | `/get/{id}` | לפי id |
+| GET | `/getDto/{id}` | לפי id כ-DTO |
+| POST | `/add` | הוספה |
+| POST | `/addDto` | הוספה (DTO) |
+| PUT | `/update` | עדכון |
+| PUT | `/updateDto` | עדכון (DTO) |
+| DELETE | `/delete/{id}` | מחיקה |
 
 ### Traveler — `api/travel`
 
 | Method | Path | תיאור |
 |--------|------|--------|
 | GET | `/getAll` | כל המטיילים |
-| GET | `/getAllDto` | מטיילים כ-DTO |
-| GET | `/get/{id}` | מטייל לפי id |
-| GET | `/getDto/{id}` | מטייל לפי id כ-DTO |
-| POST | `/add` | הוספת מטייל |
-| POST | `/addDto` | הוספת מטייל (DTO) |
-| PUT | `/update` | עדכון מטייל |
-| PUT | `/updateDto` | עדכון מטייל (DTO) |
-| DELETE | `/delete/{id}` | מחיקת מטייל |
+| GET | `/get/{id}` | לפי id |
+| POST | `/add` | הוספה |
+| PUT | `/update` | עדכון |
+| DELETE | `/delete/{id}` | מחיקה |
+
+(+ גרסאות Dto: `/getAllDto`, `/getDto/{id}`, `/addDto`, `/updateDto`)
 
 ### Comments — `api/Comments`
 
 | Method | Path | תיאור |
 |--------|------|--------|
 | GET | `/getAll` | כל התגובות |
-| GET | `/getAllDto` | תגובות כ-DTO |
-| GET | `/get/{id}` | תגובה לפי id |
-| GET | `/getDto/{id}` | תגובה לפי id כ-DTO |
-| POST | `/add` | הוספת תגובה (תאריך אוטומטי אם חסר) |
-| POST | `/addDto` | הוספת תגובה (DTO) |
-| PUT | `/update` | עדכון תגובה |
-| PUT | `/updateDto` | עדכון תגובה (DTO) |
-| DELETE | `/delete/{id}` | מחיקת תגובה |
+| GET | **`/byAttraction/{id}`** | תגובות למסלול (חדש → ישן) |
+| GET | `/get/{id}` | לפי id |
+| POST | `/add` | הוספה (תאריך + rating ברירת מחדל 5) |
+| PUT | `/update` | עדכון |
+| DELETE | `/delete/{id}` | מחיקה |
+
+**POST body לדוגמה:**
+
+```json
+{
+  "idAttraction": { "id": 1 },
+  "traveler": { "idTraveler": 1 },
+  "content": "מסלול מעולה",
+  "rating": 5
+}
+```
 
 ### ImageOfAttraction — `api/imageAttr`
 
 | Method | Path | תיאור |
 |--------|------|--------|
 | GET | `/getAll` | כל התמונות |
-| GET | `/getAllDto` | תמונות כ-DTO (bytes) |
-| GET | `/get/{id}` | תמונה לפי id |
-| GET | `/getDto/{id}` | תמונה לפי id כ-DTO |
-| POST | `/add` | הוספת תמונה |
-| POST | `/addDto` | הוספת תמונה עם העלאת קובץ |
-| PUT | `/update` | עדכון תמונה |
-| PUT | `/updateDto` | עדכון תמונה (DTO) |
-| DELETE | `/delete/{id}` | מחיקת תמונה |
+| POST | `/addDto` | העלאת קובץ |
+| DELETE | `/delete/{id}` | מחיקה |
 
-תמונות נשמרות בתיקייה `images/` בשורש הפרויקט.
+תמונות נשמרות בתיקייה `images/` בשורש server.
 
-## ישויות
+## הזנת מסלול (Postman)
 
-| ישות | שדות עיקריים |
-|------|--------------|
-| **Attraction** | שם, זמן, רמת קושי, גיל, מחיר, אזור, תמונות, תגובות |
-| **Traveler** | שם, מייל, גיל, תגובות |
-| **Comments** | תוכן, תאריך, קישור לאטרקציה ולמטייל |
-| **ImageOfAttraction** | תמונה (קובץ / bytes), קישור לאטרקציה |
+```json
+POST /api/Attraction/add
 
-### Enums
+{
+  "nameTraveler": "הבנייאס",
+  "timeAttraction": "01:23:00",
+  "difficultyLevel": "קל",
+  "age": "מבוגרים",
+  "priceOfAttraction": 1111,
+  "area": "צפון"
+}
+```
 
-- **DifficultyLevel**: קל, בינוני, קשה
-- **Age**: תינוקות, ילדים, נערים, מבוגרים
-- **Area**: צפון, דרום, מרכז, נגב
+## תיקונים חשובים
 
-## סטטוס פיתוח
+- **`@JsonIgnore` על getters** ב-`Attraction` ו-`Traveler` (`getComments`, `getListImage`) — מונע JSON מעגלי בתגובות
+- **`reloadComment`** ב-`CommentsController` — מחזיר שם מטייל מלא אחרי POST
+- **`rating`** — שדה Integer 1–5 ב-`Comments`
 
-| רכיב | סטטוס |
-|------|--------|
-| Models + Repositories | ✅ |
-| Controllers + CRUD | ✅ |
-| DTOs + MapStruct | ✅ |
-| העלאת תמונות | ✅ |
-| Tests | ❌ |
-| Frontend | ❌ |
+## CORS
 
-## הרצת בדיקות
+מותר מ-`http://localhost:5173` (React dev server) — `config/WebConfig.java`
 
-```bash
-./mvnw test
+## Client
+
+יש ממשק React מלא ב-`../client` — ראה [client/README.md](../client/README.md)
+
+## בדיקות
+
+```cmd
+mvnw.cmd test
 ```
