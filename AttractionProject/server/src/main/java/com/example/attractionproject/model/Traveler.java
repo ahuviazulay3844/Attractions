@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class Traveler {
     private int idTraveler;//traveler id
     private String nameOfTraveler;//traveler name
     private String emailOfTraveler;//traveler email
+    @JsonIgnore
     @OneToMany(mappedBy = "traveler")
     private List<Comments> Comments;//comment
     private int ageOfTraveler;//traveler age
@@ -40,6 +42,7 @@ public class Traveler {
         this.emailOfTraveler = emailOfTraveler;
     }
 
+    @JsonIgnore
     public List<com.example.attractionproject.model.Comments> getComments() {
         return Comments;
     }

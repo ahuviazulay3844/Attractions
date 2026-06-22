@@ -2,6 +2,7 @@ package com.example.attractionproject.model;
 import com.example.attractionproject.Dto.Age;
 import com.example.attractionproject.Dto.Area;
 import com.example.attractionproject.Dto.DifficultyLevel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalTime;
 import java.util.List;
@@ -31,6 +32,7 @@ public class Attraction {
     //how to use @ManyToOne
     private int id;//id
     private String nameTraveler;//traveler name
+    @JsonIgnore
     @OneToMany(mappedBy = "Attraction")
     private List<ImageOfAttraction> listImage;
     //list of images
@@ -44,6 +46,7 @@ public class Attraction {
     private int priceOfAttraction;//attraction price
 
     //list of comments
+    @JsonIgnore
     @OneToMany(mappedBy = "idAttraction")
     private List<Comments> Comments;//comment
     @Enumerated(EnumType.STRING)
@@ -64,6 +67,7 @@ public class Attraction {
         this.nameTraveler = nameTraveler;
     }
 
+    @JsonIgnore
     public List<ImageOfAttraction> getListImage() {
         return listImage;
     }
@@ -104,6 +108,7 @@ public class Attraction {
         this.priceOfAttraction = priceOfAttraction;
     }
 
+    @JsonIgnore
     public List<com.example.attractionproject.model.Comments> getComments() {
         return Comments;
     }
