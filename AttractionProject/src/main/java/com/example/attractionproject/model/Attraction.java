@@ -20,34 +20,34 @@ import java.util.List;
 //    public String getValue() {
 //        return value;
 //    }
-//}//enumשל רמת קושי המסלול
-//enum Age{תינוקות ,ילדים,נערים,מבוגרים};//גיל
-//enum Area {צפון ,דרום,מרכז,נגב};//אזור
-//יוצרת את המחלקה
+//}//enum of route difficulty level
+//enum Age{babies, children, teens, adults};//age
+//enum Area {north, south, center, negev};//area
+//creates the class
 @Entity
 public class Attraction {
-    @Id//מפתח
+    @Id//primary key
     @GeneratedValue
-    //איך משתמשים מה לעשות @ManyToOne
-    private int id;//תעודת זהות
-    private String nameTraveler;//שם מטייל
-    @OneToMany
+    //how to use @ManyToOne
+    private int id;//id
+    private String nameTraveler;//traveler name
+    @OneToMany(mappedBy = "Attraction")
     private List<ImageOfAttraction> listImage;
-    //?רשימה ש תמונות איך עושים
+    //list of images
 
-    private LocalTime timeAttraction;//זמן מסלול או אטרקציה
+    private LocalTime timeAttraction;//route or attraction time
     @Enumerated(EnumType.STRING)
 
-    private DifficultyLevel difficultyLevel;//רמת קושי קל בינוני קשה
+    private DifficultyLevel difficultyLevel;//difficulty level easy medium hard
     @Enumerated(EnumType.STRING)
-    private Age age;//גילאים המתאימים למסלול או לאטרציה
-    private int priceOfAttraction;//מחיר לאטרקיציה
+    private Age age;//ages suitable for route or attraction
+    private int priceOfAttraction;//attraction price
 
-    // רשימה של תגובות?
-    @OneToMany
-    private List<Comments> Comments;//תגובה
+    //list of comments
+    @OneToMany(mappedBy = "idAttraction")
+    private List<Comments> Comments;//comment
     @Enumerated(EnumType.STRING)
-    private Area area;//אזור
+    private Area area;//area
     public int getId() {
         return id;
     }

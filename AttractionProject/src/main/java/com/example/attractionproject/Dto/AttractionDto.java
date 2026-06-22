@@ -14,19 +14,19 @@ import java.util.List;
 
 public class AttractionDto {
 
-    private int id;//תעודת זהות
-    private String nameTraveler;//שם מטייל
+    private int id;//id
+    private String nameTraveler;//traveler name
 
 
-    private LocalTime timeAttraction;//זמן מסלול או אטרקציה
+    private LocalTime timeAttraction;//route or attraction time
 
 
-    private DifficultyLevel difficultyLevel;//רמת קושי קל בינוני קשה
+    private DifficultyLevel difficultyLevel;//difficulty level easy medium hard
 
-    private Age age;//גילאים המתאימים למסלול או לאטרציה
-    private int priceOfAttraction;//מחיר לאטרקיציה
+    private Age age;//ages suitable for route or attraction
+    private int priceOfAttraction;//attraction price
 
-    private Area area;//אזור
+    private Area area;//area
 
     public int getId() {
         return id;

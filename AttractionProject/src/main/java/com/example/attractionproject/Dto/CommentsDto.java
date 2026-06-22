@@ -10,12 +10,12 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class CommentsDto {
-    private  int idComments;//ת"ז תגובה
+    private  int idComments;//comment id
     @JoinColumn(name="id_Attraction")
-    private Attraction idAttraction;//,אטרקצ
+    private Attraction idAttraction;//attraction
     @JoinColumn(name="id_traveler")
-    private Traveler traveler;//מטייל
-    private  String content;//תגובת המטייל
-    private LocalDate localDate;//תאריך תגובה
+    private Traveler traveler;//traveler
+    private  String content;//traveler comment
+    private LocalDate localDate;//comment date
 
 }

@@ -6,10 +6,11 @@ import com.example.attractionproject.model.Comments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController//Controller
-@RequestMapping("api/Comments")//הקידומת כדי שידע שמדובר בזה
+@RequestMapping("api/Comments")//API prefix
 public class CommentsController {
     public final CommentsRepository commentsRepository;
     private  final MapStructMapper mapStructImp;
@@ -20,7 +21,7 @@ public class CommentsController {
         this.commentsRepository = commentsRepository;
         this.mapStructImp=mapStructImp;
     }
-    //מחזירה רשימת תגובות
+    //returns list of comments
         @GetMapping("/getAll")
         public List<Comments> GetAll()
         {
@@ -31,18 +32,57 @@ public class CommentsController {
     {
         return mapStructImp.toListCommentsDto(commentsRepository.findAll());
     }
-        //הוספת תגובה
+        //add comment
         @PostMapping("/add")
     public Comments Addcomments(@RequestBody Comments comments)
     {
+        if(comments.getLocalDate()==null)
+        {
+            comments.setLocalDate(LocalDate.now());//comment date
+        }
         Comments newComments=commentsRepository.save(comments);
         return newComments;
     }
     @PostMapping("/addDto")
     public CommentsDto AddcommentsDto(@RequestBody CommentsDto commentsDto)
     {
-        CommentsDto newComments=(mapStructImp.toCommentsDto(commentsRepository.save(mapStructImp.toComments(commentsDto))));
+        Comments comments=mapStructImp.toComments(commentsDto);
+        if(comments.getLocalDate()==null)
+        {
+            comments.setLocalDate(LocalDate.now());//comment date
+        }
+        CommentsDto newComments=(mapStructImp.toCommentsDto(commentsRepository.save(comments)));
         return newComments;
+    }
+    //returns comment by id
+    @GetMapping("/get/{id}")
+    public Comments GetById(@PathVariable int id)
+    {
+        return commentsRepository.findById(id).orElse(null);
+    }
+    @GetMapping("/getDto/{id}")
+    public CommentsDto GetByIdDto(@PathVariable int id)
+    {
+        return mapStructImp.toCommentsDto(commentsRepository.findById(id).orElse(null));
+    }
+    //update comment
+    @PutMapping("/update")
+    public Comments Updatecomments(@RequestBody Comments comments)
+    {
+        Comments updateComments=commentsRepository.save(comments);
+        return updateComments;
+    }
+    @PutMapping("/updateDto")
+    public CommentsDto UpdatecommentsDto(@RequestBody CommentsDto commentsDto)
+    {
+        CommentsDto updateComments=(mapStructImp.toCommentsDto(commentsRepository.save(mapStructImp.toComments(commentsDto))));
+        return updateComments;
+    }
+    //delete comment
+    @DeleteMapping("/delete/{id}")
+    public void Deletecomments(@PathVariable int id)
+    {
+        commentsRepository.deleteById(id);
     }
 
 }

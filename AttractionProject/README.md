@@ -53,24 +53,63 @@ src/main/java/com/example/attractionproject/
 
 ## API Endpoints
 
+### Attraction — `api/Attraction`
+
 | Method | Path | תיאור |
 |--------|------|--------|
-| GET | `/api/Attraction/getAll` | כל האטרקציות |
-| GET | `/api/Attraction/getAllDto` | אטרקציות כ-DTO |
-| POST | `/api/Attraction/add` | הוספת אטרקציה |
-| POST | `/api/Attraction/addDto` | הוספת אטרקציה (DTO) |
-| GET | `/api/travel/getAll` | כל המטיילים |
-| GET | `/api/travel/getAllDto` | מטיילים כ-DTO |
-| POST | `/api/travel/add` | הוספת מטייל |
-| POST | `/api/travel/addDto` | הוספת מטייל (DTO) |
-| GET | `/api/Comments/getAll` | כל התגובות |
-| GET | `/api/Comments/getAllDto` | תגובות כ-DTO |
-| POST | `/api/Comments/add` | הוספת תגובה |
-| POST | `/api/Comments/addDto` | הוספת תגובה (DTO) |
-| GET | `/api/imageAttr/getAll` | כל התמונות |
-| GET | `/api/imageAttr/getAllDto` | תמונות כ-DTO |
-| POST | `/api/imageAttr/add` | הוספת תמונה |
-| POST | `/api/imageAttr/addDto` | הוספת תמונה עם העלאת קובץ (בפיתוח) |
+| GET | `/getAll` | כל האטרקציות |
+| GET | `/getAllDto` | אטרקציות כ-DTO |
+| GET | `/get/{id}` | אטרקציה לפי id |
+| GET | `/getDto/{id}` | אטרקציה לפי id כ-DTO |
+| POST | `/add` | הוספת אטרקציה |
+| POST | `/addDto` | הוספת אטרקציה (DTO) |
+| PUT | `/update` | עדכון אטרקציה |
+| PUT | `/updateDto` | עדכון אטרקציה (DTO) |
+| DELETE | `/delete/{id}` | מחיקת אטרקציה |
+
+### Traveler — `api/travel`
+
+| Method | Path | תיאור |
+|--------|------|--------|
+| GET | `/getAll` | כל המטיילים |
+| GET | `/getAllDto` | מטיילים כ-DTO |
+| GET | `/get/{id}` | מטייל לפי id |
+| GET | `/getDto/{id}` | מטייל לפי id כ-DTO |
+| POST | `/add` | הוספת מטייל |
+| POST | `/addDto` | הוספת מטייל (DTO) |
+| PUT | `/update` | עדכון מטייל |
+| PUT | `/updateDto` | עדכון מטייל (DTO) |
+| DELETE | `/delete/{id}` | מחיקת מטייל |
+
+### Comments — `api/Comments`
+
+| Method | Path | תיאור |
+|--------|------|--------|
+| GET | `/getAll` | כל התגובות |
+| GET | `/getAllDto` | תגובות כ-DTO |
+| GET | `/get/{id}` | תגובה לפי id |
+| GET | `/getDto/{id}` | תגובה לפי id כ-DTO |
+| POST | `/add` | הוספת תגובה (תאריך אוטומטי אם חסר) |
+| POST | `/addDto` | הוספת תגובה (DTO) |
+| PUT | `/update` | עדכון תגובה |
+| PUT | `/updateDto` | עדכון תגובה (DTO) |
+| DELETE | `/delete/{id}` | מחיקת תגובה |
+
+### ImageOfAttraction — `api/imageAttr`
+
+| Method | Path | תיאור |
+|--------|------|--------|
+| GET | `/getAll` | כל התמונות |
+| GET | `/getAllDto` | תמונות כ-DTO (bytes) |
+| GET | `/get/{id}` | תמונה לפי id |
+| GET | `/getDto/{id}` | תמונה לפי id כ-DTO |
+| POST | `/add` | הוספת תמונה |
+| POST | `/addDto` | הוספת תמונה עם העלאת קובץ |
+| PUT | `/update` | עדכון תמונה |
+| PUT | `/updateDto` | עדכון תמונה (DTO) |
+| DELETE | `/delete/{id}` | מחיקת תמונה |
+
+תמונות נשמרות בתיקייה `images/` בשורש הפרויקט.
 
 ## ישויות
 
@@ -92,24 +131,11 @@ src/main/java/com/example/attractionproject/
 | רכיב | סטטוס |
 |------|--------|
 | Models + Repositories | ✅ |
-| Controllers בסיסיים | ⚠️ חלקי |
-| DTOs + MapStruct | ⚠️ מיפוי לא שלם |
-| העלאת תמונות | ❌ בפיתוח |
-| CRUD מלא | ❌ |
+| Controllers + CRUD | ✅ |
+| DTOs + MapStruct | ✅ |
+| העלאת תמונות | ✅ |
 | Tests | ❌ |
 | Frontend | ❌ |
-
-## TODO
-
-- [ ] מחיקת `Controller/String.java` ו-`Controller/ResponseEntity.java` (שוברים קומפילציה)
-- [ ] תיקון `ImageOfAttractionController` + imports חסרים
-- [ ] השלמת MapStruct (מחיר, קושי, גיל, אזור)
-- [ ] תיקון `@OneToMany` / `@ManyToOne` + `mappedBy`
-- [ ] `@GeneratedValue` ל-Comments
-- [ ] CRUD: GET by id, PUT, DELETE
-- [ ] שכבת Service
-- [ ] Validation + Exception handling
-- [ ] בדיקות יחידה/אינטגרציה
 
 ## הרצת בדיקות
 

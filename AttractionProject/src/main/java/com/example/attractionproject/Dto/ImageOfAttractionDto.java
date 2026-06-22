@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
     public class ImageOfAttractionDto {
-    private int idImage;//תז אטרקציה
-    private Attraction Attraction;//תז אטרקציה
-    private byte[] arrId;//תמונה מערך
+    private int idImage;//image id
+    private Attraction Attraction;//attraction id
+    private byte[] arrId;//image byte array
 }

@@ -1,24 +1,26 @@
 package com.example.attractionproject.model;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 @Entity
-//תגובות
+//comments
 public class Comments {
     @Id
-    private  int idComments;//ת"ז תגובה
+    @GeneratedValue
+    private  int idComments;//comment id
     @ManyToOne
     @JoinColumn(name="id_Attraction")
-    private Attraction idAttraction;//,אטרקציה
+    private Attraction idAttraction;//attraction
 
     @ManyToOne
     @JoinColumn(name="id_traveler")
 
-    private  Traveler traveler;//מטייל
-    private  String content;//תגובת המטייל
-    private LocalDate localDate;//תאריך תגובה
+    private  Traveler traveler;//traveler
+    private  String content;//traveler comment
+    private LocalDate localDate;//comment date
     public void setIdComments(int idComments) {
         this.idComments = idComments;
     }

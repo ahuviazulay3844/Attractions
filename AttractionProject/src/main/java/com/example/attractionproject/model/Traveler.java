@@ -11,12 +11,12 @@ import java.util.List;
 public class Traveler {
     @Id
     @GeneratedValue
-    private int idTraveler;//ת"ז מטייל
-    private String nameOfTraveler;//שם מטייל
-    private String emailOfTraveler;//מייל מטייל
-    @OneToMany
-    private List<Comments> Comments;//תגובה
-    private int ageOfTraveler;//גיל המטייל
+    private int idTraveler;//traveler id
+    private String nameOfTraveler;//traveler name
+    private String emailOfTraveler;//traveler email
+    @OneToMany(mappedBy = "traveler")
+    private List<Comments> Comments;//comment
+    private int ageOfTraveler;//traveler age
     public int getIdTraveler() {
         return idTraveler;
     }

@@ -1,6 +1,5 @@
 package com.example.attractionproject.Service;
 
-import ch.qos.logback.core.model.ComponentModel;
 import com.example.attractionproject.Dto.AttractionDto;
 import com.example.attractionproject.Dto.CommentsDto;
 import com.example.attractionproject.Dto.ImageOfAttractionDto;
@@ -11,16 +10,15 @@ import com.example.attractionproject.model.ImageOfAttraction;
 import com.example.attractionproject.model.Traveler;
 import org.mapstruct.Mapper;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-@Mapper(componentModel = "spring")//משויך לspringboots
+@Mapper(componentModel = "spring")//linked to spring boot
 public interface MapStructMapper {
-    //המרות
+    //conversions
     Attraction toAttraction(AttractionDto attractionDto);
 
     AttractionDto toAttractionDto(Attraction attraction);
@@ -53,12 +51,12 @@ public interface MapStructMapper {
         ImageOfAttractionDto imageOfAttractionDto = new ImageOfAttractionDto();
         imageOfAttractionDto.setAttraction(ImageOfAttraction.getAttraction());
         imageOfAttractionDto.setIdImage(ImageOfAttraction.getIdImage());
-        String dir = System.getProperty("user.dir");//ניתוב עד הפרויקט הזה
-        //מקבל מחרוזת והופך לניתוב
-        Path fileUrl = Paths.get(dir + ImageOfAttraction.getImg());
-        byte[] arr = Files.readAllBytes(fileUrl);// את התמונההופך לביטים
-        imageOfAttractionDto.setArrId(arr);//שם בתוכו את התמונה בביטים
-        return imageOfAttractionDto;//מחחזיר אותו
+        String dir = System.getProperty("user.dir");//path to this project
+        //converts string to path
+        Path fileUrl = Paths.get(dir + "\\images\\" + ImageOfAttraction.getImg());
+        byte[] arr = Files.readAllBytes(fileUrl);//converts image to bytes
+        imageOfAttractionDto.setArrId(arr);//sets image bytes in dto
+        return imageOfAttractionDto;//returns dto
     }
 //
     default ImageOfAttraction toImageOfAttraction(ImageOfAttractionDto ImageOfAttractionDto) {

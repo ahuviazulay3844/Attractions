@@ -9,8 +9,8 @@ import java.util.List;
 @Getter
 @Setter
 public class TravelerDto {
-    private int idTraveler;//ת"ז מטייל
-    private String nameOfTraveler;//שם מטייל
-    private String emailOfTraveler;//מייל מטייל
-    private int ageOfTraveler;//גיל המטייל
+    private int idTraveler;//traveler id
+    private String nameOfTraveler;//traveler name
+    private String emailOfTraveler;//traveler email
+    private int ageOfTraveler;//traveler age
 }

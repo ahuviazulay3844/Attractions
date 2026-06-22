@@ -2,13 +2,13 @@ package com.example.attractionproject.model;
 import jakarta.persistence.*;
 @Entity
 public class ImageOfAttraction {
-    @Id//מפתח
+    @Id//primary key
     @GeneratedValue
-    private int idImage;//תז אטרקציה
+    private int idImage;//image id
     @ManyToOne
     @JoinColumn(name="id_Attraction")
-    private Attraction Attraction;//תז אטרקציה
-    private String img;//תמונה
+    private Attraction Attraction;//attraction id
+    private String img;//image
     public int getIdImage() {
         return idImage;
     }
