@@ -4,14 +4,6 @@
   <b>אפליקציית Full Stack לגילוי, סינון, דירוג ושמירה של מסלולי טיול בישראל: מוצאים מסלול שמתאים בדיוק לכם, קוראים חוויות של מטיילים ומשאירים דירוג משלכם.</b>
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Java-17-E76F51?style=flat-square&logo=openjdk&logoColor=white">
-  <img src="https://img.shields.io/badge/Spring_Boot-3.4.5-6DB33F?style=flat-square&logo=springboot&logoColor=white">
-  <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black">
-  <img src="https://img.shields.io/badge/Vite-8-A855F7?style=flat-square&logo=vite&logoColor=white">
-  <img src="https://img.shields.io/badge/H2-Database-264653?style=flat-square">
-</p>
-
 <h3 align="center">🎬 סרטון הדגמה (2:19, עם קריינות)</h3>
 
 https://github.com/user-attachments/assets/207a01d7-45e0-4e70-a0e1-e327c2a6ec49
