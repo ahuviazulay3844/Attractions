@@ -71,7 +71,7 @@ npm run dev
 - **הצג/הסתר סיסמה** (עין) בטופס התחברות והרשמה
 
 ### גלריה
-- תמונות SVG מקומיות לכל מסלול — ללא תלות באינטרנט (לא נחסמות ברשת)
+- תמונות JPG מקומיות לכל מסלול (`client/src/assets/trips`), ללא תלות באינטרנט (לא נחסמות ברשת)
 
 ---
 
@@ -155,7 +155,7 @@ Endpoints נפוצים: `GET /getAll`, `GET /get/{id}`, `POST /add`, `PUT /updat
 
 ## הערות חשובות
 
-- **תמונות מסלולים** — SVG מקומי ב-client (`tripImageArt.js` + `tripImages.js`), ללא קישורים חיצוניים
+- **תמונות מסלולים** — קבצי JPG מקומיים ב-`client/src/assets/trips`, נטענים דרך `import.meta.glob` ב-`tripImages.js`, ללא קישורים חיצוניים
 - **מועדפים / משתמשים** — localStorage בדפדפן (לא ב-DB)
 - **JsonIgnore** על getters ב-`Attraction` / `Traveler` — מונע JSON אינסופי בתגובות
 

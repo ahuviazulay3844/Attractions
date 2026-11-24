@@ -52,8 +52,7 @@ client/src/
 │   ├── Modal.jsx, Toast.jsx, States.jsx
 ├── constants/
 │   ├── enums.js         # ערכי enum תואמים לשרver
-│   ├── tripImages.js    # metadata + mapping per trip
-│   └── tripImageArt.js  # SVG artwork (offline, no external URLs)
+│   └── tripImages.js    # metadata + mapping per trip (JPG from assets/trips)
 ├── context/
 │   └── AuthContext.jsx
 ├── pages/
@@ -111,7 +110,7 @@ client/src/
 
 ## תמונות מסלולים
 
-לא מהשרver — SVG מקומי ב-`constants/tripImageArt.js` + metadata ב-`tripImages.js`. עובד גם כש-Unsplash/Wikimedia חסומים ברשת.
+לא מהשרת — קבצי JPG מקומיים ב-`src/assets/trips`, נטענים דרך `import.meta.glob` ב-`constants/tripImages.js` (יחד עם ה-metadata). עובד גם כשאתרי תמונות חיצוניים חסומים ברשת.
 
 ## דירוגים
 
