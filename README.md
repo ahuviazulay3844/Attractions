@@ -6,6 +6,10 @@
 
 <h3 align="center">🎬 סרטון הדגמה (2:19, עם קריינות)</h3>
 
+<p align="center">
+  <a href="https://github.com/user-attachments/assets/207a01d7-45e0-4e70-a0e1-e327c2a6ec49"><img src="docs/media/preview.gif" width="820" alt="Preview - click to watch with sound"></a>
+</p>
+
 https://github.com/user-attachments/assets/207a01d7-45e0-4e70-a0e1-e327c2a6ec49
 
 ---
